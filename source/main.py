@@ -153,7 +153,7 @@ def remove_person():
             people_file.write(line)
 
 
-# remove a person from the list
+# remove a drink from the list
 def remove_drink():
     item = num_check(input("Which drink would you like to remove? \nChoose the id. "), len(people_dict))
     # error handling
@@ -212,7 +212,6 @@ def num_check(test_int, int_max=len(menu_option_list)):
         return -1  # error code for out of bound int
     return new_int
 
-
 # function that prompts user to amend the preferences
 def pref_amend():
     new_preference = True
@@ -243,9 +242,11 @@ def pref_amend():
             item = num_check(item, len(drinks_dict))
     drinks_id_chosen = item  # save id as new variable
 
+
+#BUG FIX!!! REMOVED a "-1" TO CURE PREFERENCES ISSUE
     if new_preference:
         people_file = open("documentation/preferences.txt", "a")  # open the file for appending
-        people_file.write(str(person_id_chosen - 1) + "," + str(drinks_id_chosen) + "\n")  # add the string
+        people_file.write(str(person_id_chosen) + "," + str(drinks_id_chosen) + "\n")  # add the string
         people_file.close()
     else:
         people_file = open("documentation/preferences.txt", "r")
@@ -253,8 +254,8 @@ def pref_amend():
         people_file.close()
         people_file = open("documentation/preferences.txt", "w")
         for line in lines:
-            if line[0] == str(person_id_chosen - 1):
-                line = str(person_id_chosen - 1) + "," + str(drinks_id_chosen) + "\n"
+            if line[0] == str(person_id_chosen):
+                line = str(person_id_chosen) + "," + str(drinks_id_chosen) + "\n"
             people_file.write(line)
         people_file.close()
 
