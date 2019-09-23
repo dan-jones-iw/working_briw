@@ -1,7 +1,15 @@
 # BrUH v0.4
-## Setup
+### Setup
 get the repo on your system
-## Run
-command - `python3 source/main.py`
-## Submissions
+
+create `config.py` and put in host and password:
+
+- `host = ""`
+- `password = ""`
+ 
+ 
+### Run
+command - `python3 -m source.main`
+
+### Submissions
 pull request on GitHub ty

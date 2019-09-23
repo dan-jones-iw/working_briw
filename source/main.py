@@ -1,6 +1,7 @@
 import sys
 import os
-import time
+from source.db import Database
+
 
 # system setting
 arg_list = sys.argv
@@ -61,24 +62,25 @@ class Round:
 
     def persist(self):
         round_file = open("documentation/round.txt", "w+")
-        round_file.write(str(self.server_id) + "\n")  # first line is server id
+        round_file.write(str(self.server_id))  # first line is server id
         for drink_id in self.drinks.keys():
-            round_file.write(str(drink_id) + "-" + str(self.drinks[drink_id]) + "\n")
+            round_file.write("\n" + str(drink_id) + "-" + str(self.drinks[drink_id]))
         round_file.close()
 
     def read_file(self):
         round_file = open("documentation/round.txt", "r+")
         lines = round_file.readlines()
-        if lines[0]:
+        if len(lines) != 0:
             self.server_id = int(lines[0])
             del lines[0]
-        if lines[0]:
+        if len(lines) != 0:
             for line in lines:
                 split_line = line.split("-")
                 drink_id = int(split_line[0])
                 split_line = split_line[1][1:-1]
                 people_id_list = split_line.split(",")
                 for index, uid in enumerate(people_id_list):
+                    uid = uid.strip(" ]")
                     people_id_list[index] = int(uid)
                 self.drinks[drink_id] = people_id_list
 
