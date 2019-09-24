@@ -288,6 +288,25 @@ def return_to_menu():
     input("Press enter to return to menu. ")
 
 
+def get_drinks():
+    try:
+        drinks_file = open("documentation/drinks.txt", "r")  # open file
+    except FileNotFoundError:
+        print("Saved data (drinks) not found. Opening empty save...")  # if file not present
+        drinks_file = open("documentation/drinks.txt", "w+")  # open empty file
+    big_drinks_string = drinks_file.read()  # read file and save onto one string
+    drinks_file.close()  # close file
+    drinks_list = big_drinks_string.splitlines()  # split string into string list using lines
+    drinks_dictionary = {}  # create empty dictionary
+    for i in range(0, len(drinks_list)):  # loop through string list
+        if len(drinks_list[i]) > 0:  # dodge non-empty lines
+            drinks_dictionary[i] = drinks_list[i]  # save elements of list into dictionary
+        else:
+            i -= 1
+
+    return drinks_dictionary
+
+
 # INITIALISE LISTS & DICTS
 def get_people():
     try:
@@ -306,25 +325,6 @@ def get_people():
             i -= 1
 
     return people_dictionary
-
-
-def get_drinks():
-    try:
-        drinks_file = open("documentation/drinks.txt", "r")  # open file
-    except FileNotFoundError:
-        print("Saved data (drinks) not found. Opening empty save...")  # if file not present
-        drinks_file = open("documentation/drinks.txt", "w+")  # open empty file
-    big_drinks_string = drinks_file.read()  # read file and save onto one string
-    drinks_file.close()  # close file
-    drinks_list = big_drinks_string.splitlines()  # split string into string list using lines
-    drinks_dictionary = {}  # create empty dictionary
-    for i in range(0, len(drinks_list)):  # loop through string list
-        if len(drinks_list[i]) > 0:  # dodge non-empty lines
-            drinks_dictionary[i] = drinks_list[i]  # save elements of list into dictionary
-        else:
-            i -= 1
-
-    return drinks_dictionary
 
 
 def get_id():
