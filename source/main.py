@@ -1,6 +1,6 @@
 import sys
 import os
-from source.db import Database
+#from source.db import Database
 
 
 # system setting
@@ -97,9 +97,9 @@ def create_welcome_message():
 
 
 # function to print table to console
-def make_table(type, type_dict):
+def make_table(name, type_dict):
     os.system('clear')  # clear terminal
-    print(f"{barrier}\n| id | {type.upper()}\n{barrier}")  # print top line
+    print(f"{barrier}\n| id | {name.upper()}\n{barrier}")  # print top line
     for key, value in type_dict.items():
         print(f"| {key}  | {value}")  # print next lines
     print(f"{barrier}\n")  # print final line
@@ -157,7 +157,7 @@ def remove_person():
 
 # remove a drink from the list
 def remove_drink():
-    item = num_check(input("Which drink would you like to remove? \nChoose the id. "), len(people_dict))
+    item = num_check(input("Which drink would you like to remove? \nChoose the id. "), len(drinks_dict))
     # error handling
     while item < 0:
         if item == -2:
