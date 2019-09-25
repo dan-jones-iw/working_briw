@@ -1,5 +1,6 @@
 import pymysql
 import config
+from source.file import *
 
 
 def return_connection_string():
@@ -37,12 +38,12 @@ def write_sql(sql_string):
         connection.close()
 
 
-query = "INSERT INTO person(name, age) VALUES ('Dan', 22)"
-write_sql(query)
+def get_all_people():
+    query = "SELECT * FROM person"
+    result = get_sql(query)
+    return result
 
-query = "DELETE FROM person WHERE person_id > 10"
-write_sql(query)
 
-query = "SELECT * FROM person"
-result = get_sql(query)
-print(result)
+def save_person(name, age, favourite_drink_id):
+    query = f"INSERT INTO person(name, age, favourite_drink_id) VALUES ('{name}', {age}, {favourite_drink_id})"
+    write_sql(query)

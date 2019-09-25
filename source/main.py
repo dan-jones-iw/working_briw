@@ -1,5 +1,6 @@
 import sys
 import os
+from source.file import *
 #from source.db import Database
 
 
@@ -126,16 +127,8 @@ def amend_people():
 
 # remove a person from the list
 def remove_person():
-    item = num_check(input("Which person would you like to remove? \nChoose the id. "), len(people_dict))
-    # error handling
-    while item < 0:
-        if item == -2:
-            item = input("Please enter a number. ")
-            item = num_check(item, len(people_dict))
-        if item == -1:
-            item = input("Please enter a number in the correct range. ")
-            item = num_check(item, len(people_dict))
-    person_id_chosen = item  # save id as new variable
+    person_id_chosen = int_input("Which person would you like to remove? \nChoose the id. ", len(people_dict))# save id as new variable
+
     # if they have preference - remove person from preferences.txt
     if person_id_chosen in id_dict.keys():
         id_file = open("documentation/preferences.txt", "r")
@@ -153,6 +146,7 @@ def remove_person():
     for line in lines:
         if line.strip("\n") != str(people_dict[person_id_chosen]):
             people_file.write(line)
+    people_file.close()
 
 
 # remove a drink from the list
@@ -162,10 +156,10 @@ def remove_drink():
     while item < 0:
         if item == -2:
             item = input("Please enter a number. ")
-            item = num_check(item, len(people_dict))
+            item = num_check(item, len(drinks_dict))
         if item == -1:
             item = input("Please enter a number in the correct range. ")
-            item = num_check(item, len(people_dict))
+            item = num_check(item, len(drinks_dict))
     drink_id_chosen = item  # save id as new variable
     # remove any preferences associated with drink
     id_file = open("documentation/preferences.txt", "r")
@@ -174,16 +168,17 @@ def remove_drink():
     id_file = open("documentation/preferences.txt", "w")
     for line in lines:
         # FIX THIS BIT PLSPLSPLS
-        if line.strip(",")[0] != str(person_id_chosen):
+        if line.strip(",")[1] != str(drink_id_chosen):
             id_file.write(line)
-    # remove person from people.txt
-    people_file = open("documentation/people.txt", "r")
-    lines = people_file.readlines()
-    people_file.close()
-    people_file = open("documentation/people.txt", "w")
+    # remove person from drinks.txt
+    drinks_file = open("documentation/drinks.txt", "r")
+    lines = drinks_file.readlines()
+    drinks_file.close()
+    drinks_file = open("documentation/drinks.txt", "w")
     for line in lines:
-        if line.strip("\n") != str(people_dict[person_id_chosen]):
-            people_file.write(line)
+        if line.strip("\n") != str(drinks_dict[drink_id_chosen]):
+            drinks_file.write(line)
+    drinks_file.close()
 
 
 # adds an item to a file
@@ -201,7 +196,7 @@ def amend_drinks():
 
 
 # function that checks numeric user input for legality
-def num_check(test_int, int_max=len(menu_option_list)):
+def num_check(test_int, int_max):
     if not test_int.isdigit():  # test if string input is a digit
         return -2  # error code for non-digit string
     # error handling
@@ -214,38 +209,34 @@ def num_check(test_int, int_max=len(menu_option_list)):
         return -1  # error code for out of bound int
     return new_int
 
+
+def int_input(message, limit=len(menu_option_list)):
+    while True:
+        item = num_check(input(message), limit)
+        if item == -2:
+            continue
+        if item == -1:
+            print("That is not a valid option.")
+            continue
+
+        return item
+
+
 # function that prompts user to amend the preferences
 def pref_amend():
     new_preference = True
-    # print_preferences()  # print preference table
-    item = num_check(input("Whose preference would you like to amend? \nChoose the id. "), len(people_dict))
-    # error handling
-    while item < 0:
-        if item == -2:
-            item = input("Please enter a number. ")
-            item = num_check(item, len(people_dict))
-        if item == -1:
-            item = input("Please enter a number in the correct range. ")
-            item = num_check(item, len(people_dict))
-    person_id_chosen = item  # save id as new variable
+    person_id_chosen = int_input("Whose preference would you like to amend? \nChoose the id. ", len(people_dict)) # save id as new variable
     if person_id_chosen in id_dict.keys():  # check if person_id_chosen already has a preference or not
         new_preference = False
 
     make_table("drinks", drinks_dict)  # now print drinks table
-    item = num_check(input(f"What is {people_dict[person_id_chosen]}'s preference? \nChoose the id. "),
-                     len(drinks_dict))
+
     # error handling
-    while item < 0:
-        if item == -2:
-            item = input("Please enter a number. ")
-            item = num_check(item, len(drinks_dict))
-        if item == -1:
-            item = input("Please enter a number in the correct range. ")
-            item = num_check(item, len(drinks_dict))
-    drinks_id_chosen = item  # save id as new variable
+    drinks_id_chosen = int_input(f"What is {people_dict[person_id_chosen]}'s preference? \nChoose the id. ",
+                     len(drinks_dict))
 
 
-#BUG FIX!!! REMOVED a "-1" TO CURE PREFERENCES ISSUE
+    #BUG FIX!!! REMOVED a "-1" TO CURE PREFERENCES ISSUE
     if new_preference:
         people_file = open("documentation/preferences.txt", "a")  # open the file for appending
         people_file.write(str(person_id_chosen) + "," + str(drinks_id_chosen) + "\n")  # add the string
@@ -272,9 +263,7 @@ def choose(selection):
 def main_menu():
     os.system('clear')
     print(create_welcome_message())  # print the welcome message
-    num = input("Please enter a number. ")  # request user input
-    num = num_check(num)  # check valid number
-
+    num = int_input("Please enter a number. ")
     return num
 
 
@@ -288,35 +277,12 @@ def return_to_menu():
     input("Press enter to return to menu. ")
 
 
-def get_drinks():
-    try:
-        drinks_file = open("documentation/drinks.txt", "r")  # open file
-    except FileNotFoundError:
-        print("Saved data (drinks) not found. Opening empty save...")  # if file not present
-        drinks_file = open("documentation/drinks.txt", "w+")  # open empty file
-    big_drinks_string = drinks_file.read()  # read file and save onto one string
-    drinks_file.close()  # close file
-    drinks_list = big_drinks_string.splitlines()  # split string into string list using lines
-    drinks_dictionary = {}  # create empty dictionary
-    for i in range(0, len(drinks_list)):  # loop through string list
-        if len(drinks_list[i]) > 0:  # dodge non-empty lines
-            drinks_dictionary[i] = drinks_list[i]  # save elements of list into dictionary
-        else:
-            i -= 1
-
-    return drinks_dictionary
-
-
 # INITIALISE LISTS & DICTS
+file = File()
+
+
 def get_people():
-    try:
-        people_file = open("documentation/people.txt", "r")  # open file
-    except FileNotFoundError:
-        print("Saved data (people) not found. Opening empty save...")  # if file not present
-        people_file = open("documentation/people.txt", "w+")  # open empty file
-    big_people_string = people_file.read()  # read file and save onto one string
-    people_file.close()  # close file
-    people_list = big_people_string.splitlines()  # split string into string list using lines
+    people_list = file.get_people()  # split string into string list using lines
     people_dictionary = {}  # create empty dictionary
     for i in range(0, len(people_list)):  # loop through string list
         if len(people_list[i]) > 0:  # non-empty line
@@ -327,15 +293,20 @@ def get_people():
     return people_dictionary
 
 
+def get_drinks():
+    drinks_list = file.get_drinks()  # split string into string list using lines
+    drinks_dictionary = {}  # create empty dictionary
+    for i in range(0, len(drinks_list)):  # loop through string list
+        if len(drinks_list[i]) > 0:  # dodge non-empty lines
+            drinks_dictionary[i] = drinks_list[i]  # save elements of list into dictionary
+        else:
+            i -= 1
+
+    return drinks_dictionary
+
+
 def get_id():
-    try:
-        id_file = open("documentation/preferences.txt", "r")  # open file
-    except FileNotFoundError:
-        print("Saved data (preferences) not found. Opening empty save...")  # if file not present
-        id_file = open("documentation/preferences.txt", "w+")  # open empty file
-    big_id_string = id_file.read()  # read file and save onto one string
-    id_file.close()  # close file
-    id_list = big_id_string.splitlines()  # split string into string list using splitlines
+    id_list = file.get_favourites()  # split string into string list using splitlines
     id_dictionary = {}  # create empty dictionary
     for elm in id_list:  # loop through string list
         split_elm = elm.split(",")  # split elements of string list with ","
@@ -372,8 +343,7 @@ while True:
             if choice in yes:
                 amend_drinks()  # add to file
             elif choice == "rm":
-                pass
-                # TODO remove_drink()
+                remove_drink()
             else:
                 break
         return_to_menu()
