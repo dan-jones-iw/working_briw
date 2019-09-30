@@ -29,10 +29,10 @@ class PersonHandler(BaseHTTPRequestHandler):
         self.send_response(200)
 
 
-def run(port=8080, server_class=HTTPServer, handler_class=PersonHandler):
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, handler_class)
-    print("Starting server")
+def run(port=8008, server_class=HTTPServer, handler_class=PersonHandler):
+    server_address = ('0.0.0.0', port)
+    httpd = server_class(server_address, handler_class)
+    print("Starting running..")
     httpd.serve_forever()
 
 

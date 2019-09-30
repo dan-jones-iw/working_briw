@@ -1,0 +1,9 @@
+**/BUGLIST.txt
+**/venv/*
+**/.idea/*
+**/documentation/*
+**/source/__pycache__/*
+**/er
+**/config.py
+**/static_website/*
+**/dynamic_website/*
