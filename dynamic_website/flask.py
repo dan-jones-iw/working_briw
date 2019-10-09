@@ -12,26 +12,6 @@ def main_page():
         return render_template("main_page.html", title="Main")
 
 
-@app.route("/person", methods=["GET"])
-def person_main():
-    json_list_of_people = get_all_people()
-    return render_template("person_master.html", title="People", data=json_list_of_people)
-
-
-@app.route("/person-add", methods=["GET", "POST"])
-def person_add():
-    if request.method == "GET":
-        return render_template("form_input_person.html", title="CreateForm")
-
-    elif request.method == "POST":
-        person_name = request.form.get("person-name")
-        age = request.form.get("age")
-
-        save_person(person_name, age)
-
-        return render_template("form_output_person.html", title="FormDone", person=person_name, age=age)
-
-
 @app.route("/round", methods=["GET", "POST"])
 def round_main():
     global global_round_id

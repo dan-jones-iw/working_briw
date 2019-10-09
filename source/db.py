@@ -1,9 +1,8 @@
 import pymysql
 import config
-from source.file import *
 
 # run db locally
-local = False
+local = True
 
 
 # # # # # # # # # # # # # #
