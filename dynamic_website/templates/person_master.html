@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Person table:</h3>
+    <table class="tg">
+        <tr>
+            <th class="tg-c3ow">Name</th>
+            <th class="tg-c3ow">Age</th>
+            <th class="tg-c3ow">Favourite Drink</th>
+            <th class="tg-c3ow">Recent Drink Order</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td class="tg-g30d">{{row[1]}}</td>
+            <td class="tg-g30d">{{row[2]}}</td>
+            <td class="tg-g30d">{{row[3]}}</td>
+            <td class="tg-g30d">{{row[4]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+
+    <table>
+        <tr align="left">
+            <th><a href="/person-add">Add a person</a></th>
+            <th><a href="/person-edit">Edit a person's details</a></th>
+        </tr>
+    </table>
+    <p><a href="/">Return to Menu</a></p>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "order_master.html" %}
+{% set sub_title = "View" %}
+
+{% block content %}
+<h3>
+    Server: {{server_name}}
+</h3>
+{% if round_data != et %}
+    <table class="content-table">
+        <tr>
+            <th>Name of Person</th>
+            <th>Drink Choice</th>
+        </tr>
+        {% for row in round_data %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+{% else %}
+    <div>
+        <p>No orders present in round.</p>
+    </div>
+{% endif %}
+    <div>
+        <a href="/order/create">Add a new order</a>
+    </div>
+{% if round_data != et %}
+    <div>
+        <a href="/order/complete">Complete the order</a>
+    </div>
+{% endif %}
+<div class="options">
+</div>
+{% endblock %}

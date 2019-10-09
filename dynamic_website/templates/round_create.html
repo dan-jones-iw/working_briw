@@ -1,0 +1,16 @@
+{% extends "round_master.html" %}
+{% set sub_title = "Create" %}
+
+{% block content %}
+<div>
+    <form method="post">
+        <select name="person-name" required>
+            <option value="default" disabled selected>Choose a person to host the round</option>
+            {% for item in data %}
+                <option value='{{item[1]}}'>{{item[1]}}</option>
+            {% endfor %}
+        </select>
+        <input id="submit-btn" type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

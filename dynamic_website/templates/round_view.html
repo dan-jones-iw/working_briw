@@ -1,0 +1,40 @@
+{% extends "round_master.html" %}
+{% set sub_title = "View" %}
+
+{% block content %}
+{% if round_list != empty_tuple %}
+    <h3>Round table:</h3>
+    <table class="content-table">
+        <tr>
+            <th>Round_ID</th>
+            <th>Server</th>
+        </tr>
+        {% for row in round_list %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div>
+        <form method="post">
+            <select name="round-id" required>
+                <option value="default" disabled selected>Choose the round id</option>
+                {% for item in round_list %}
+                    <option value='{{item[0]}}'>{{item[0]}}</option>
+                {% endfor %}
+            </select>
+            <input id="submit-btn" type="submit" value="Submit">
+        </form>
+    </div>
+{% else %}
+    <div>
+        <p>No round present.</p>
+    </div>
+    <div>
+        <a href="/round/create">Create a new round</a>
+    </div>
+{% endif %}
+<div class="options">
+</div>
+{% endblock %}

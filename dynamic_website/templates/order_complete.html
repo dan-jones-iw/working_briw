@@ -1,0 +1,29 @@
+{% extends "order_master.html" %}
+{% set sub_title = "Complete" %}
+
+{% block content %}
+<h3>
+    Round {{round_id}} has been completed!
+</h3>
+    <h4>Completed table:</h4>
+    <table class="content-table">
+        <tr>
+            <th>Drink</th>
+            <th>Name of Person</th>
+        </tr>
+        {% for drink, person_list in dict.items() %}
+            {% for person in person_list %}
+                <tr>
+                    {% if person_list.index(person) == 0 %}
+                        <td>{{drink}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>{{person}}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+<div class="options">
+</div>
+{% endblock %}

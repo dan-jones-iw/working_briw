@@ -1,0 +1,16 @@
+{% extends "order_master.html" %}
+{% set sub_title = "Create" %}
+
+{% block content %}
+<div>
+    <form method="post">
+        <select name="person-name" required>
+            <option value="default" disabled selected>Choose a person to add to the round</option>
+            {% for person in favourite_data %}
+                <option value='{{person[1]}}'>{{person[1]}} - {{person[2]}}</option>
+            {% endfor %}
+        </select>
+        <input id="submit-btn" type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}
