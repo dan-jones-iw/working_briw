@@ -1,6 +1,5 @@
 import sys
 import os
-from prettytable import PrettyTable
 from source.file import *
 from source.db import *
 from source.round import *
@@ -12,8 +11,7 @@ os.system('clear')
 
 # string stuff
 menu_option_list = ["List of people", "List of drinks", "Show preferences", "Create Round", "Help", "Exit", "DB Clean"]
-barrier = "+ = = = = = = = = = = = ="
-yes = ["Yes", "yes", "Y", "y"]
+yes = ["Yes", "yes", "Y", "y", "ye", "yeh boi", "yes please"]
 
 
 # create welcome message
@@ -132,38 +130,27 @@ def int_input(message, limit=len(menu_option_list)):
 
 # function that prompts user to amend the preferences
 def pref_amend():
-    new_preference = True
     print_people_nice()
-    person_id_chosen = int_input("Whose preference would you like to amend? \nChoose the id. ", 100000) # save id as new variable
+    person_id_chosen = int_input("Whose preference would you like to amend? \nChoose the id. ",
+                                 get_number_of("person"))
 
-    # CHECK IF IN DB
-    # if person_id_chosen in id_dict.keys():  # check if person_id_chosen already has a preference or not
-    #     new_preference = False
-
-    print_drink_nice()
-
-    # error handling
     name_of_person_chosen = get_name_of_person_from_id(person_id_chosen)
+    print_drink_nice()
     drinks_id_chosen = int_input(f"What is {name_of_person_chosen}'s preference? \nChoose the id. ",
-                                 1000000)
+                                 get_number_of("drink"))
 
     update_drink_preference_of_person(person_id_chosen, drinks_id_chosen)
+
+
+def not_enough_drinks_for_favourite():
+    print("Cannot add favourites as there aren't any drinks present in database. ")
+    print("Add drinks before editing preferences.")
 
 
 # function that prompts user for amending the lists
 def choose(item):
     selection = input(f"Would you like to add to {item}? \nType yes or no. ")
     return selection
-
-
-def check_if_round_exists():
-    # an empty table returns an empty tuple from get_round
-    data_from_round = get_round()
-    empty_tuple = ()
-    if data_from_round == empty_tuple:
-        return False
-    else:
-        return True
 
 
 # menus
@@ -182,49 +169,18 @@ def return_to_menu():
     input("Press enter to return to menu. ")
 
 
-def create_new_round():
-    print_people_nice()
-    server_id_chosen = int_input("Which person is serving this round? \nChoose the id.", get_number_of("person"))
-    return server_id_chosen
-
-
-# all the table printing
-def print_people_nice():
-    os.system('clear')
-    pref_table = PrettyTable()
-    pref_table.field_names = ["id", "name"]
-    for row in get_all_people_nice():
-        pref_table.add_row([row[0], row[1]])
-    print(pref_table)
-
-
-def print_drink_nice():
-    os.system('clear')
-    print(f"{barrier}\n|(id, drink)\n{barrier}")
-    for row in get_all_drink_nice():
-        print(f"| {row}")
-    print(barrier)
-
-
-def print_preferences():
-    os.system('clear')
-    pref_table = PrettyTable()
-    pref_table.field_names = ["name", "drink"]
-    for row in get_all_favourites():
-        pref_table.add_row([row[1], row[2]])
-    print(pref_table)
-
-
-def choose_who_to_add_to_order():
+def choose_who_to_add_to_order(round_id):
     print_people_nice()
     question = "Which person would you like to add to the order? \nSelect the id from the list above: "
-    id_of_person_chosen = input(question)
+    id_of_person_chosen = int_input(question, get_number_of("person"))
+
+    in_round = check_if_person_in_round(round_id, id_of_person_chosen)
 
     print_drink_nice()
     question = f"And what would {get_name_of_person_from_id(id_of_person_chosen)} like to drink? "
-    id_of_drink_chosen = input(question)
+    id_of_drink_chosen = int_input(question, get_number_of("drink"))
 
-    return [id_of_person_chosen, id_of_drink_chosen]
+    return [id_of_person_chosen, id_of_drink_chosen, in_round]
 
 
 # MAIN BODY OF PROGRAM
@@ -232,51 +188,55 @@ def choose_who_to_add_to_order():
 while True:
     num_selection = main_menu()  # print main menu screen and get user selection
     if num_selection == 1:  # list of people
-        while True:  # run until user decides against it
+        while True:
             print_people_nice()
-            choice = choose("people")  # ask if user wants to amend the list
+            choice = choose("people")  # ask if user wants to amend
             if choice in yes:
-                amend_people()  # amend people on file
+                amend_people()
             elif choice == "rm":  # cheeky remove person
                 remove_person()
             else:
                 break
         return_to_menu()
     elif num_selection == 2:  # list of drinks
-        while True:  # run until user stops
+        while True:
             print_drink_nice()
             choice = choose("drinks")  # ask user if they want to amend
             if choice in yes:
-                amend_drinks()  # add to file
+                amend_drinks()
             elif choice == "rm":
                 remove_drink()
             else:
                 break
         return_to_menu()
-    elif num_selection == 3:  # update preferences
-        while True:  # run until user stops
-            print_preferences()  # print preferences
-            choice = choose("preferences")  # ask user if they want to amend
-            if choice in yes:
-                pref_amend()  # add to file
+    elif num_selection == 3:  # update favourites
+        while True:
+            print_preferences()
+            if get_all_drinks() != ():
+                choice = choose("preferences")  # ask user if they want to amend
+                if choice in yes:
+                    pref_amend()
+                else:
+                    break
             else:
+                not_enough_drinks_for_favourite()
                 break
         return_to_menu()
     elif num_selection == 4:  # orders
-        if not check_if_round_exists():
-            server_id = create_new_round()
-            current_round = Round(server_id=server_id)
-            current_round.create_new_round_in_db()
-        else:
-            round_id = get_max_round_id()
-            current_round = Round(round_id=round_id)
-            current_round.load_round()
-        while True:
+        round_initialised = True
+        current_round = Round()
+        if not current_round.initialise_round():
+            round_initialised = False
+            print("No people in database to start a round. \nPlease add a person before trying to create a round.")
+        while round_initialised:
             current_round.print_current_order()
             choice = choose("orders")
             if choice in yes:
-                order_to_add = choose_who_to_add_to_order()
-                current_round.add_order_to_db(order_to_add[0], order_to_add[1])
+                order_to_add = choose_who_to_add_to_order(current_round.round_id)
+                if order_to_add[2]:
+                    current_round.add_order_to_db(order_to_add[0], order_to_add[1])
+                else:
+                    current_round.update_order_in_db(order_to_add[0], order_to_add[1])
             else:
                 break
         return_to_menu()
