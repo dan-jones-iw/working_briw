@@ -4,11 +4,6 @@ import source.db as db
 from source.printing import print_people_nice, print_drink_nice, print_preferences
 from source.round import *
 
-
-# system setting
-arg_list = sys.argv
-os.system('clear')
-
 # string stuff
 menu_option_list = ["List of people", "List of drinks", "Show preferences", "Create Round", "Help", "Exit", "DB Clean"]
 yes = ["Yes", "yes", "Y", "y", "ye", "yeh boi", "yes please", "yeah boi"]

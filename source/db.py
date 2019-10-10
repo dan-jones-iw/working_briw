@@ -2,7 +2,7 @@ import pymysql
 import config
 
 # run db locally
-local = True
+local = False
 
 
 # # # # # # # # # # # # # #
